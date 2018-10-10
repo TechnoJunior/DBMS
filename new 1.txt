@@ -1,0 +1,351 @@
+SQL> Declare
+  2  a integer :=40;
+  3  b integer :=30;
+  4  c integer;
+  5  Begin
+  6  c:=a+b;
+  7  Dbms_output.put_line('value of c:'||c);
+  8  END;
+  9  /
+value of c:70
+
+PL/SQL procedure successfully completed.
+
+Declare 
+radius float;
+area float;
+diameter float;
+circumference float;
+begin
+radius:=&radius;
+area:=3.14*radius*radius;
+diameter:=2*radius;
+circumference:=2*3.14*radius;
+dbms_output.put_line('The area of circle is:-'||area);
+dbms_output.put_line('The area of diameter is:-'||diameter);
+dbms_output.put_line('The area of circumference is:-'||circumference);
+end;
+/
+
+Declare
+a integer;
+begin
+a:=&a;
+if(a>100)
+then
+dbms_output.put_line('A is greater number form 100:-'||a);
+else
+dbms_output.put_line('A is not greater number form 100:-'||a);
+end if;
+End;
+/
+
+declare 
+area number :=0;
+pi number:=3.14;
+r number:=0;
+beginam
+for r in 1..6 loop
+area:=pi*r*r;
+insert into circle values(r,area);
+dbms_output.Put_line(area);
+end loop;
+end;
+/
+
+Write a switch to print Days of a week
+declare
+d number:=1;
+day varchar(20);
+begin
+case d
+when d=1 then set day="Sunday";
+when d=2 then set day="Monday";
+when d=3 then set day="Tuesday";
+when d=4 then set day="Wednesday";
+when d=5 then set day="Thursday";
+when d=6 then set day="Friday";
+when d=7 then set day="Saturday";
+else set day="Invalid";
+end case;
+end;
+
+Find maximum of three number inserted by user and display the same
+Declare
+a integer;
+b integer;
+c integer;
+begin
+a:=&a;
+b:=&b;
+c:=&c;
+if(a>b)
+then
+dbms_output.put_line('A is greater number :-'||a);
+elseif(b>a)
+then
+dbms_output.put_line('B is greater number :-'||b);
+elseif
+dbms_output.put_line('c is greater number :-'||c);
+end if;
+End;
+
+Area of Cylinder
+area=2pirh+2pr*r
+
+To swap 2 number without using 3rd number(University Paper)
+To find sum of first 5 integers from user
+declare
+i number:=0;
+no number;
+begin
+for i in 1...6 loop
+
+end loop;
+end
+
+To find factorial of number
+
+
+
+create or replace procedure "insertuser"
+(id in number,name in varchar2)
+is
+begin
+insert into user200 values(id,name);
+end;
+/
+
+beign
+insertuser(1,'Rahul');
+dbms_output.Put_line("Record Inserted Successfully");
+end;
+
+Write PL/SQL procedure to print simple statement by using procedure
+SET serveroutput ON
+create or replace procedure helloworld1
+as
+begin
+dbms_output.put_line('Hello World');
+end;
+
+Write PL/SQL procedure to calculate square of a number taken by user
+set serveroutput on
+create or replace procedure square(a in out number)
+is
+begin
+a:=a*a;
+dbms_output.put_line('Square of number : '||a);
+end;
+
+create or replace procedure to find minimum of 2 numbers
+set serveroutput on;
+create or replace procedure min(a in number,b in number) is 
+begin
+if(a>b)
+dbms_output.put_line('b is smaller');
+else
+dbms_output.put_line('a is smaller');
+end if;
+end min;
+
+Write PL/SQL procedure to raise salary of employee when employee id is given
+set serveroutput on
+create or replace procedure salary(empid in number,sal in number) as
+begin
+update emp2 set empsal=empsal+sal where empid=empid;
+dbms_output.Put_line('Table updated');
+end salary;
+/
+
+execute procedure without parameter
+write PL/SQL procedure for getting the emp details as per emp id entered by the user
+set serveroutput on
+create or replace procedure details(pempid in number) as
+v_name emp2.empid%type;
+begin
+select empid,empsal into v_name from emp2
+where empid=pempid;
+dbms_output.Put_line('Emp Id :'||pempid);
+dbms_output.Put_line('Name :'||v-name);
+end details;
+/
+
+Write a PL/SQL procedure to insert data in db_user table with attributes userid,username,createby,createddate user concept of %type           
+
+Write a PL/SQL procedure to get data from the table and display it as per the input given by user
+-take emp_id as input and emp_record as output
+create table with attributes emp_name,emp_salary and emp_commission
+
+1.emp(enumber,name,sal,commission)
+2.create or replace rpcedure emp_rec(empid in emp.enumber%type,emp_rsd our emp%rowtype)
+  is
+  begin
+  select * into emp_rsd from emp
+  where  enumber=empid;
+  dbms_output.Put_line('emp number:'||emp_rsd.enumber);
+  " 	"	"			"			"
+  end;
+  declare
+  var2 emp%rowtype;
+  begin
+  emp_rec(2,var2);
+  end;
+  
+  
+  
+  
+  Functions
+  
+Write a function to find cube of a number
+create or replace function cube return int
+is
+a integer;
+begin
+a:=10;
+a:=a*a*a;
+dbms_output.put_line(a);
+end cube;
+/
+
+declare
+c integer;
+begin
+c:=cube(5);
+dbms_output.put_line(c);
+end;
+
+Write a function to display total no.of customers from table
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+RANGE PARTITIONING
+create table <table_name>
+{
+	column1 type(size);
+	column2 type(size);
+	.
+	.
+	.
+	columnn type(size);
+}
+partition by range(column)
+{
+	partition <partition-name> value less than (values);
+}
+create table sales with attributes year product amt and paritition by year as 
+1st partition(1990)
+2nd partition (2000)
+3rd partition (2010)
+4th partition (2020)
+
+create table sales(year number,product varchar(20),amt number)
+partition by range(year)
+(partition first values less than(1900),
+partition second values less than(2000),
+partition third values less than(2010),
+partition fourth values less than(2020));
+
+select partition_name,high_value from user_tab_partitionS where table_name='SALES';
+
+select * from sales partition(first);
+alter table sales add partition fifth values less than (2025);
+alter table sales rename partition fifth to f;
+
+split
+alter table <table-name>
+split partition p2 at (1995) into
+(
+	partition p21,[partition p22
+)
+
+merge
+
+alter table <table-name>
+merge partiions p21,p22 into partition p33;
+
+truncate
+alter table <table-name> truncate partition p3;
+
+drop
+alter table <table-name> drop partition p3;
+
+create table student with attributes roll,name,sem and avg.marks 
+parttition the table into three partitiions based on avg.marks
+
+
+create table students (roll number primary key,name varchar(20),sem number,marks number)
+partition by range(marks)
+(partition poor values less than(30),
+partition good values less than (70),
+partition Excellent values less than (100));
+
+<SYNTAX>
+create table table_name
+{
+	attribute data type(size);
+	....
+}
+partition by list(attribute)
+{
+	partition <partition-name> values ('values1','Values2'),
+	...
+}
+
+create table with list_partition table name customer attribute c_id,c_name,c_city,and order place
+partition by city mark 4 partition  west east south and north zone
+
+create table customers(c_id number primary key,c_name varchar(20),c_city varchar(20),Ord_place varchar(20))
+partition by list(c_city)
+(
+	partition western values('Marine','Bandra','Virar'),
+	partition central values('Dadar','Thane','Kalyan'),
+	partition harbour values('Wadala','Kurla','vasai')
+)
+assign new partition as default
+alter table table_name add partition p_name values(default);
+
+
+alter table table_name split partition par_name values(attributes) into (partition partition_name1,partition partition_name2));
+alter table customers split partition central values('Dadar','Thane') into (partition 'Mum_Div',partition 'Thane_div');
+
+modify the partition
+alter table table_name modify partition partition_name add values(values);
+alter table customers modify partition western add values('Borivali');
+
+merge the partition
+alter table table_name merge partitions p1,p2 into partition p_name;
+alter table customers merge partitions MUM_DIV,THANE_DIV into partition central;
+
+rename
+truncate
+drop
+
+
+
+HASH
+create table table_name(attribute dataype(size)
+partition by has(attribute)
+(
+	partitions <no.of partitions>
+)
+
+create table product with attributes p-no & description partition by hashing the product no into 4 partitions
+1.insert 10 records
+2.display all the values from table
+3.view partitions
+4.get data from individual partition
+add partition,rename partition,truncate partition and finally drop partition
+
+create table product(p_no number primary key,description varchar(20))
+partition by hash(p_no) partitions 4;
