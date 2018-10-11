@@ -1,0 +1,51 @@
+table-spaces
+types
+-permanent
+-temporary
+-undo
+<s>
+create table-space <t_name>
+Datafile <Datafile_Name>
+size
+online;
+
+create table sales-hash with attributes sales_id,sales_date,cust_id & total price
+partition by hash sales_id
+do partitioning by creating three table-spaces
+
+create table sales_hash
+(sales_id number,
+sales_date date,
+cust_id number,
+total_price number)
+partition by hash(sales_id)
+(
+partition p1 tablespace tbs1,
+partition p2 tablespace tbs2,
+partition p3 tablespace tbs3
+);
+
+
+
+Fragmentation
+1.Create table employee with attributes emp(eno,ename,add,sal,designation) 
+2.Insert 10 Records
+3.Divide employee into horizontal fragment using the condition that employee1 contains all the tuples with salary<10000
+  and employee2 with salary between 10k-20k
+4.Execute
+  -find salary of all employees(union)
+  -find the details where salary=15000
+  -find the name and salary with e_name starts with j
+ 
+create table emp1(eno number primary key,ename varchar(20),add varchar(20),sal number,des varchar(20));
+
+create table emp11 as (select * from emp1 where sal<70000);
+create table emp12 as (select * from emp1 where sal between 70000 AND 80000);
+
+1.select * from emp11 union select * from emp12;
+2.select * from emp11 where sal=15000 union select * from emp12 where sal=15000;
+3.select * from emp11 where ename like 'A%' union select * from emp12 where ename like 'A%';
+
+
+
+Vertical Fragmentation
