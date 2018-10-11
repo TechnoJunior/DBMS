@@ -1,0 +1,518 @@
+table-spaces
+types
+-permanent
+-temporary
+-undo
+<s>
+create table-space <t_name>
+Datafile <Datafile_Name>
+size
+online;
+
+create table sales-hash with attributes sales_id,sales_date,cust_id & total price
+partition by hash sales_id
+do partitioning by creating three table-spaces
+
+create table sales_hash
+(sales_id number,
+sales_date date,
+cust_id number,
+total_price number)
+partition by hash(sales_id)
+(
+partition p1 tablespace tbs1,
+partition p2 tablespace tbs2,
+partition p3 tablespace tbs3
+);
+
+
+
+Fragmentation
+1.Create table employee with attributes emp(eno,ename,add,sal,designation) 
+2.Insert 10 Records
+3.Divide employee into horizontal fragment using the condition that employee1 contains all the tuples with salary<10000
+  and employee2 with salary between 10k-20k
+4.Execute
+  -find salary of all employees(union)
+  -find the details where salary=15000
+  -find the name and salary with e_name starts with j
+ 
+create table emp1(eno number primary key,ename varchar(20),add varchar(20),sal number,des varchar(20));
+
+create table emp11 as (select * from emp1 where sal<70000);
+create table emp12 as (select * from emp1 where sal between 70000 AND 80000);
+
+1.select * from emp11 union select * from emp12;
+2.select * from emp11 where sal=15000 union select * from emp12 where sal=15000;
+3.select * from emp11 where ename like 'A%' union select * from emp12 where ename like 'A%';
+
+
+
+Vertical Fragmentation
+
+for vertical fragmentation create table emp with att(eno,ename,address,email & salary)
+insert 10 records
+make 2 vertical fragments
+emp1(empno,empname,add)
+emp2(eno,email,salary) 
+-find the salary of emp where empno is known
+-find email of all the emp where ename is known(NOT NULL)
+-find empname with salary>20000
+-find ename,email where eno is known
+-execute all the queries on created fragments
+
+create table emp21 as(select eno,ename,address from emp2);
+create table emp22 as(select eno,email,salary from emp2);
+1.select sal from emp21 where eno=1;
+2.select a.ename,b.sal from emp21 a,emp22 b where a.eno=b.eno and a.ename is not null;
+3.select a.ename from emp21 a,emp22 b where a.eno=b.eno and a.ename is not null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------
+         5 Siddesh              Badlapur                  70000
+Developer
+
+
+SQL> select * from emp11 where sal=70000 union select * from emp12 where sal=700
+00;
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         3 Abhishek             Malad                     70000
+Designer
+
+         5 Siddesh              Badlapur                  70000
+Developer
+
+
+SQL> select * from emp12 where ename like 'A%';
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         3 Abhishek             Malad                     70000
+Designer
+
+
+SQL> select * from emp12 where ename like 'A%' union select * from emp11 where e
+name like 'A%';
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         3 Abhishek             Malad                     70000
+Designer
+
+
+SQL> commit
+  2  ;
+
+Commit complete.
+
+SQL> select * from emp1;
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         1 Mani                 Mahim                     50000
+Accountant
+
+         2 Niraj                Thane                    750000
+CEO
+
+         3 Abhishek             Malad                     70000
+Designer
+
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         4 Bhavik               Dombvili                  65000
+Tester
+
+         5 Siddesh              Badlapur                  70000
+Developer
+
+
+SQL> commit
+  2  select * from emp1;
+select * from emp1
+*
+ERROR at line 2:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+SQL> select * from emp1;
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         1 Mani                 Mahim                     50000
+Accountant
+
+         2 Niraj                Thane                    750000
+CEO
+
+         3 Abhishek             Malad                     70000
+Designer
+
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+DES
+--------------------
+         4 Bhavik               Dombvili                  65000
+Tester
+
+         5 Siddesh              Badlapur                  70000
+Developer
+
+
+SQL> create table emp2(eno number primary key,ename varchar(20),add varchar(20),
+sal number,email varchar(20));
+create table emp2(eno number primary key,ename varchar(20),add varchar(20),sal n
+umber,email varchar(20))
+                                                           *
+ERROR at line 1:
+ORA-00904: : invalid identifier
+
+
+SQL> create table emp2(eno number primary key,ename varchar(20),address varchar(
+20),sal number,email varchar(20));
+
+Table created.
+
+SQL> insert into emp2 values (&eno,&ename,&address,&sal,&email);
+Enter value for eno: 1
+Enter value for ename: 'Mani'
+Enter value for address: 'Mahim'
+Enter value for sal: 50000
+Enter value for email: 'Dload@gmail.com'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (1,'Mani','Mahim',50000,'Dload@gmail.com')
+
+1 row created.
+
+SQL> /
+Enter value for eno: 2
+Enter value for ename: 'Niraj'
+Enter value for address: 'Thane'
+Enter value for sal: 70000
+Enter value for email: 'tak@af.com'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (2,'Niraj','Thane',70000,'tak@af.com')
+
+1 row created.
+
+SQL> /
+Enter value for eno: 3
+Enter value for ename: 'Bhavik'
+Enter value for address: 'Dombivli'
+Enter value for sal: 80000
+Enter value for email: 'a@a.com'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (3,'Bhavik','Dombivli',80000,'a@a.com')
+
+1 row created.
+
+SQL> /
+Enter value for eno: 4
+Enter value for ename: 'Abhishek'
+Enter value for address: 'Malad'
+Enter value for sal: 85000
+Enter value for email: 'a@a.com'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (4,'Abhishek','Malad',85000,'a@a.com')
+
+1 row created.
+
+SQL> /
+Enter value for eno: 5
+Enter value for ename: NULL
+Enter value for address: 'ajshk'
+Enter value for sal: 848905
+Enter value for email: 'd@d
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (5,NULL,'ajshk',848905,'d@d)
+ERROR:
+ORA-01756: quoted string not properly terminated
+
+
+SQL> /
+Enter value for eno: NULL
+Enter value for ename: 'asd'
+Enter value for address: 'asdf'
+Enter value for sal: 33
+Enter value for email: 'rr'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (NULL,'asd','asdf',33,'rr')
+insert into emp2 values (NULL,'asd','asdf',33,'rr')
+                         *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."EMP2"."ENO")
+
+
+SQL> /
+Enter value for eno: 5
+Enter value for ename: NULL
+Enter value for address: 'dsf'
+Enter value for sal: 555
+Enter value for email: 'asdf'
+old   1: insert into emp2 values (&eno,&ename,&address,&sal,&email)
+new   1: insert into emp2 values (5,NULL,'dsf',555,'asdf')
+
+1 row created.
+
+SQL> select * from emp2;
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+EMAIL
+--------------------
+         1 Mani                 Mahim                     50000
+Dload@gmail.com
+
+         2 Niraj                Thane                     70000
+tak@af.com
+
+         3 Bhavik               Dombivli                  80000
+a@a.com
+
+
+       ENO ENAME                ADDRESS                     SAL
+---------- -------------------- -------------------- ----------
+EMAIL
+--------------------
+         4 Abhishek             Malad                     85000
+a@a.com
+
+         5                      dsf                         555
+asdf
+
+
+SQL> create table emp21(select eno,ename,address from emp2);
+create table emp21(select eno,ename,address from emp2)
+                   *
+ERROR at line 1:
+ORA-00904: : invalid identifier
+
+
+SQL> create table emp21 as(select eno,ename,address from emp2);
+
+Table created.
+
+SQL> select * from emp21;
+
+       ENO ENAME                ADDRESS
+---------- -------------------- --------------------
+         1 Mani                 Mahim
+         2 Niraj                Thane
+         3 Bhavik               Dombivli
+         4 Abhishek             Malad
+         5                      dsf
+
+SQL> create table emp22 as(select eno,email,salary from emp2);
+create table emp22 as(select eno,email,salary from emp2)
+                                       *
+ERROR at line 1:
+ORA-00904: "SALARY": invalid identifier
+
+
+SQL> create table emp22 as(select eno,email,sal from emp2);
+
+Table created.
+
+SQL> select * from emp22;
+
+       ENO EMAIL                       SAL
+---------- -------------------- ----------
+         1 Dload@gmail.com           50000
+         2 tak@af.com                70000
+         3 a@a.com                   80000
+         4 a@a.com                   85000
+         5 asdf                        555
+
+SQL> select * from emp21;
+
+       ENO ENAME                ADDRESS
+---------- -------------------- --------------------
+         1 Mani                 Mahim
+         2 Niraj                Thane
+         3 Bhavik               Dombivli
+         4 Abhishek             Malad
+         5                      dsf
+
+SQL> select * from emp22;
+
+       ENO EMAIL                       SAL
+---------- -------------------- ----------
+         1 Dload@gmail.com           50000
+         2 tak@af.com                70000
+         3 a@a.com                   80000
+         4 a@a.com                   85000
+         5 asdf                        555
+
+SQL> select sal from emp21 where eno=50000
+  2  ;
+select sal from emp21 where eno=50000
+       *
+ERROR at line 1:
+ORA-00904: "SAL": invalid identifier
+
+
+SQL> select salsssa
+  2  ;
+
+*
+ERROR at line 2:
+ORA-00923: FROM keyword not found where expected
+
+
+SQL> select sal from emp22 where sal>20000 union select ename from emp21;
+select sal from emp22 where sal>20000 union select ename from emp21
+       *
+ERROR at line 1:
+ORA-01790: expression must have same datatype as corresponding expression
+
+
+SQL>
+SQL> select sal from emp22 where eno=
+  2  (select eno from emp21)
+  3  ;
+(select eno from emp21)
+ *
+ERROR at line 2:
+ORA-01427: single-row subquery returns more than one row
+
+
+SQL> select sal from emp22 where eno=1;
+
+       SAL
+----------
+     50000
+
+SQL> select emp21.ename from emp22 where email=asdf;
+select emp21.ename from emp22 where email=asdf
+                                          *
+ERROR at line 1:
+ORA-00904: "ASDF": invalid identifier
+
+
+SQL> select emp21.ename from emp22 where email='asdf';
+select emp21.ename from emp22 where email='asdf'
+       *
+ERROR at line 1:
+ORA-00904: "EMP21"."ENAME": invalid identifier
+
+
+SQL> select emp21.ename,emp22.email from emp22 where emp21.eno=emp22.eno and eno
+ is not null;
+select emp21.ename,emp22.email from emp22 where emp21.eno=emp22.eno and eno is n
+ot null
+                                                *
+ERROR at line 1:
+ORA-00904: "EMP21"."ENO": invalid identifier
+
+
+SQL> select * from emp22;
+
+       ENO EMAIL                       SAL
+---------- -------------------- ----------
+         1 Dload@gmail.com           50000
+         2 tak@af.com                70000
+         3 a@a.com                   80000
+         4 a@a.com                   85000
+         5 asdf                        555
+
+SQL> select * from emp21;
+
+       ENO ENAME                ADDRESS
+---------- -------------------- --------------------
+         1 Mani                 Mahim
+         2 Niraj                Thane
+         3 Bhavik               Dombivli
+         4 Abhishek             Malad
+         5                      dsf
+
+SQL> select emp21.ename,emp22.sal from emp22 where emp22.eno=emp21.no;
+select emp21.ename,emp22.sal from emp22 where emp22.eno=emp21.no
+                                                        *
+ERROR at line 1:
+ORA-00904: "EMP21"."NO": invalid identifier
+
+
+SQL> select emp21.ename,emp22.sal from emp22 where emp22.eno=emp21.eno;
+select emp21.ename,emp22.sal from emp22 where emp22.eno=emp21.eno
+                                                        *
+ERROR at line 1:
+ORA-00904: "EMP21"."ENO": invalid identifier
+
+
+SQL> select emp21.ename,emp22.sal from emp22 a,emp21 b where a.eno=b.eno;
+select emp21.ename,emp22.sal from emp22 a,emp21 b where a.eno=b.eno
+                   *
+ERROR at line 1:
+ORA-00904: "EMP22"."SAL": invalid identifier
+
+
+SQL> select emp21.ename from emp22 a,emp21 b where a.eno=b.eno;
+select emp21.ename from emp22 a,emp21 b where a.eno=b.eno
+       *
+ERROR at line 1:
+ORA-00904: "EMP21"."ENAME": invalid identifier
+
+
+SQL> select a.ename,b.sal from emp21 a,emp22 b where a.eno=b.eno;
+
+ENAME                       SAL
+-------------------- ----------
+Mani                      50000
+Niraj                     70000
+Bhavik                    80000
+Abhishek                  85000
+                            555
+
+SQL> select a.ename,b.sal from emp21 a,emp22 b where a.eno=b.eno and a.ename is
+not null;
+
+ENAME                       SAL
+-------------------- ----------
+Mani                      50000
+Niraj                     70000
+Bhavik                    80000
+Abhishek                  85000
+
+SQL> select a.ename from emp21 a,emp22 b where a.eno=b.eno and a.ename is not nu
+ll;
+
+ENAME
+--------------------
+Mani
+Niraj
+Bhavik
+Abhishek
+
+SQL>
