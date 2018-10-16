@@ -1,0 +1,105 @@
+Cursor
+
+When an sQl statement is processed oracle creates memory area knows as context area
+A cursor is a pointer to this context area. It contains all the information needed for processing the statement
+In Pl/SQL the context area is controlled by cursor,
+A cursor contains information on select statement and the rows of data access by it.
+A cursor is used to refer to a program to fetch and process the rows return by SQL statements one at a time
+
+
+Write an implicit cursor to retrieve data from the table
+create table customer(id number primary key,name varchar(20),add varchar(20),pur_amt number);
+
+set serveroutput on
+declare
+cursor cust_cur is
+select id,name,address,pur_amt from customer;
+cust_rec cust_cur%rowtype;
+begin
+dbms_output.put_line('id name address pur_amt');
+open cust_cur;
+loop
+fetch cust_cur into cust_rec;
+exit when cust_cur%notfound;
+dbms_output.put_line(cust_rec.id||'  '||cust_rec.name||' '||cust_rec.address||' '||cust_rec.pur_amt);
+end loop;
+end;
+SQL> set serveroutput on
+SQL> declare
+  2  cursor cust_cur is
+  3  select id,name,address,pur_amt from customer;
+  4  cust_rec cust_cur%rowtype;
+  5  begin
+  6  dbms_output.put_line('id name address pur_amt');
+  7  open cust_cur;
+  8  loop
+  9  fetch cust_cur into cust_rec;
+ 10  exit when cust_cur%notfound;
+ 11  dbms_output.put_line(cust_rec.id||'  '||cust_rec.name||' '||cust_rec.addres
+s||' '||cust_rec.pur_amt);
+ 12  end loop;
+ 13  end;
+ 14  /
+id name address pur_amt
+1  Mani Mahim 5000
+2  Abhishek Malad 6000
+3  Bhavik Dombivli 5000
+4  Niraj Thane 7000
+5  Siddesh Badlapur 3000
+
+PL/SQL procedure successfully completed.
+
+SQL>
+
+
+
+Write an implicit cursor to update data from the table and specify how many records are updated
+-
+set serveroutput on
+declare
+cursor cust_cur is
+select id from customer;
+cust_rec cust_cur%type;
+begin
+update customer set pur_amt=2000 where id=1;
+open cust_cur;
+dbms_output.put_line(cust_rec%rowcount);
+end;
+
+syntax 
+cursor cusr_name 
+steps to be followed while working with explicit cursor
+1.Declare the cursor to initialize in the memory
+2.Open the cursor to allocate memory
+3.Fetch the cursor to retrieve the data
+4.Close the cursor to release allocated memory
+
+
+Write an explicit cursor to retrieve from the table
+
+set serveroutput on
+declare
+cursor cust_cur is
+select id,name,address,pur_amt from customer;
+cust_rec cust_cur%rowtype;
+begin
+open cust_cur;
+loop
+fetch cust_cur into cust_rec;
+exit when cust_cur%notfound;
+end loop;
+end
+
+create open page and close format cursor from retriving the data from 'rights' table and display it
+rights(horsename,racename,position,jockyname)
+
+
+
+
+
+write an explicit cursor to retrieve the data from project table and check whether the cursor is open or not
+if not then open it else print message that cursor is already open
+pname,pno,plocation
+
+
+
